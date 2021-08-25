@@ -1,0 +1,25 @@
+version: '2.4'
+services:
+  
+  samba:
+    image: dperson/samba
+    restart: always
+    network_mode: "host"
+    cpu_shares: 2048 
+    blkio_config:
+      weight: 1000
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./shared_data:/shared
+    environment:
+      - USERID=0
+      - GROUPID=0
+    command:
+      - '-w'
+      - 'WORKGROUP'
+      - '-s'
+      - 'Shared;/shared;yes;no'
+      - '-r'
+      - '-n'
+      - '-W'
+
