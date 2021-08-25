@@ -1,0 +1,13 @@
+version: "2.4"
+
+services:
+  mqtt:
+    image: eclipse-mosquitto:2
+    restart: always
+    ports:
+      - 1883:1883/tcp
+      - 8883:8883/tcp
+    volumes:
+      - ./config:/mosquitto/config:ro
+      - ./data:/mosquitto/data
+
