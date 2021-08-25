@@ -1,0 +1,16 @@
+version: '2.4'
+
+services:
+  esphome:
+    image: esphome/esphome
+    restart: always
+    ports:
+      - 6052:6052
+    volumes:
+      - ./config:/config
+    healthcheck:
+      test: "curl --connect-timeout 2 --silent -f http://127.0.0.1:6052/ || exit 1"
+      interval: 45s
+      timeout: 30s
+      retries: 3
+
