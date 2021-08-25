@@ -1,0 +1,12 @@
+version: "2.4"
+
+services:
+  influx:
+    image: influxdb:1.8
+    restart: always
+    mem_limit: 256m
+    ports:
+      - 8086:8086
+    volumes:
+      - ./data:/var/lib/influxdb
+
