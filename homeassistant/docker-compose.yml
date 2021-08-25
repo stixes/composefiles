@@ -1,0 +1,23 @@
+version: '2.4'
+
+services:
+  homeassistant:
+    image: "ghcr.io/home-assistant/raspberrypi4-homeassistant:stable"
+    restart: always
+    network_mode: host
+    privileged: true
+    volumes:
+      - ./config:/config
+      - type: bind
+        source: /sys
+        target: /sys
+    environment:
+      - TZ=Europe/Copenhagen
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
+    healthcheck:
+      test: "curl --connect-timeout 2 --silent -f http://127.0.0.1:8123/ || exit 1"
+      interval: 45s
+      timeout: 30s
+      retries: 3
