@@ -1,0 +1,26 @@
+version: "2.4"
+
+services:
+
+  prometheus:
+    image: prom/prometheus:latest
+    restart: always
+    volumes:
+      - ./etc:/etc/prometheus
+      - ./data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention=365d'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    cpu_shares: 512
+    blkio_config:
+      weight: 250
+    ports:
+      - 9090:9090/tcp
+    healthcheck:
+      test: "wget -T 3 -qO /dev/null http://localhost:9090/graph"
+      interval: 30s
+      timeout: 30s
+      retries: 2
