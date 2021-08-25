@@ -1,0 +1,20 @@
+version: "2.4"
+
+services:
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - 3000:3000/tcp
+    volumes:
+      - ./data:/var/lib/grafana
+      - ./prov:/etc/grafana/provisioning
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: "VerySecretPasswordGoesHere"
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    restart: always
+    healthcheck:
+      test: "wget -T 3 -qO /dev/null http://localhost:3000/login"
+      interval: 30s
+      timeout: 30s
+      retries: 2
+
