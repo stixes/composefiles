@@ -1,0 +1,45 @@
+version: "2.4"
+
+services:
+  
+  nodeexporter:
+    image: prom/node-exporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    ports:
+      - 9100:9100/tcp
+    cpu_shares: 512 
+    command: 
+      - '--path.procfs=/host/proc' 
+      - '--path.sysfs=/host/sys'
+      - --collector.filesystem.ignored-mount-points
+      - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
+    restart: always
+    healthcheck:
+      test: "wget -T 3 -qO /dev/null http://localhost:9100/"
+      interval: 30s
+      timeout: 30s
+      retries: 2
+
+  cadvisor:
+    image: google/cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+      - 9101:8080/tcp
+    restart: always
+    cpu_shares: 512 
+    command:
+      - '--global_housekeeping_interval=60s'
+      - '--housekeeping_interval=60s'
+    healthcheck:
+      test: "wget -T 3 -qO /dev/null http://localhost:8080/"
+      interval: 30s
+      timeout: 30s
+      retries: 2
+
